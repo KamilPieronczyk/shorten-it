@@ -1,14 +1,17 @@
-import React, { Component ,useContext, useEffect } from 'react'
+import React, { Component } from 'react'
 import Layout from '../layouts/layout'
 import styled from 'styled-components'
 import Box from '../components/box'
 import URLinput from '../components/URL_input'
+import { connect } from 'react-redux';
 
-export default class Home extends React.Component {
+class Home extends Component {
   render(){
+    const header = this.props.header
+    console.log(header)
     return (
       <Layout>
-        <Title>shorten it</Title>
+        <Title>{header}</Title>
         <URLinput />
         <BoxContainer>
           <Box primary="#FF8008" secondary="#FFC837" title="basic">
@@ -25,6 +28,13 @@ export default class Home extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => ({
+  header: state.default.header
+})
+
+export default connect(mapStateToProps)(Home)
+
 
 const Title = styled.p`
   font-size: 100px;

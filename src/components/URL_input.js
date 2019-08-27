@@ -2,14 +2,14 @@ import React, { Component, createRef } from 'react'
 import styled from 'styled-components'
 import PulseLoader from 'react-spinners/PulseLoader';
 import firebase from 'firebase';
+import { connect } from "react-redux";
+import { Actions } from '../duck'
 
-export default class URLinput extends Component {
+class URLinput extends Component {
   constructor(props){
     super(props)
     this.URLinput = createRef()
     this.state = {
-      loading: false,
-      inputText: 'do it',
       status: 'ready',
       inputColor: {
         ready: '#707070',
@@ -59,10 +59,12 @@ export default class URLinput extends Component {
     if(this.state.status == 'ready'){
       let url = this.URLinput.current.value
       if(this.isURL(url)){
+        this.props.create_link()
         this.setState({loading: true})
         let newURL = await this.shortener(url)
         this.URLinput.current.value = window.location.host + '/' + newURL
         this.setState({loading: false, inputText: 'copy', status: 'done'})
+        this.props.link_created_successfully()
       } else {
         this.setState({status: 'wrong'})
         alert("Wrong URL adress")
@@ -93,22 +95,36 @@ export default class URLinput extends Component {
   }
 
   render(){
+    const { buttonText, loading } = this.props
     return (
       <InputConatiner>
         <Input onChange={this.check} type="text" placeholder="Type your URL" ref={this.URLinput} style={{color: this.state.status != 'wrong' ? '#707070' : 'red'}} />
         <Button onClick={this.DoIt}>
-          {!this.state.loading ? this.state.inputText : ''}
+          {!loading ? buttonText : ''}
           <PulseLoader
             sizeUnit={"px"}
             size={15}
             color={'#fff'}
-            loading={this.state.loading}
+            loading={loading}
           />
         </Button>
       </InputConatiner>
     )
   }
 }
+
+const mapStateToProps = (state) => ({
+  buttonText: state.default.button,
+  loading: state.default.loading
+})
+
+const mapDispatchToProps = {
+  create_link: Actions.create_link,
+  link_created_successfully: Actions.link_created_successfully
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(URLinput)
+
 
 const InputConatiner = styled.div`
   display: flex;

@@ -1,5 +1,6 @@
 import React from 'react';
 import Redirect from './pages/Redirect'
+import { Provider } from 'react-redux'
 
 import {
   BrowserRouter as Router,
@@ -8,12 +9,14 @@ import {
 
 import Home from './pages/Home'
 
-function App() {
+function App({store}) {
   return (
-    <Router>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/:url" component={Redirect} />
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/:url" component={Redirect} />
+      </Router>
+    </Provider>
   );
 }
 
