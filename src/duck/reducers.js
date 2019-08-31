@@ -18,8 +18,24 @@ const reducer = (state = initialState, { type, payload }) => {
   }
 }
 
+const initialAuthState = {
+  user: 'test',
+}
+
+const authReducer = (state = initialAuthState, {type, user}) => {
+  switch (type) {
+    case types.SIGN_IN:
+      return { user }
+    case types.SIGN_OUT:
+      return { user: null }
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
-  default: reducer
+  default: reducer,
+  auth: authReducer
 })
 
 

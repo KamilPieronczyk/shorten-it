@@ -3,12 +3,11 @@ import Layout from '../layouts/layout'
 import styled from 'styled-components'
 import Box from '../components/box'
 import URLinput from '../components/URL_input'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 
 class Home extends Component {
   render(){
     const header = this.props.header
-    console.log(header)
     return (
       <Layout>
         <Title>{header}</Title>
