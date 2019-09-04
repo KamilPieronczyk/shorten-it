@@ -40,12 +40,14 @@ class URLinput extends Component {
       }
       firebase.firestore().collection('URLs').where('newURL','==',newURL).get().then(querySnapshot => {
         if(querySnapshot.empty){
-          firebase.firestore().collection('URLs').add({
+          let object = {
             baseURL: url,
             shortenURL: newURL,
             count: 0,
-            lastVisited: firebase.firestore.FieldValue.serverTimestamp()
-          }).then(()=>{
+            lastVisited: firebase.firestore.FieldValue.serverTimestamp(),
+          }
+          if(this.props.user != null) object.user = this.props.user.uid
+          firebase.firestore().collection('URLs').add(object).then(()=>{
             return resolve(newURL);
           })
         } else {
@@ -115,7 +117,8 @@ class URLinput extends Component {
 
 const mapStateToProps = (state) => ({
   buttonText: state.default.button,
-  loading: state.default.loading
+  loading: state.default.loading,
+  user: state.auth.user
 })
 
 const mapDispatchToProps = {

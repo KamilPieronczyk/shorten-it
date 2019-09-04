@@ -3,7 +3,6 @@ import Layout from '../layouts/layout'
 import styled from 'styled-components'
 import PulseLoader from 'react-spinners/PulseLoader';
 import firebase from 'firebase';
-import { stringLiteral } from '@babel/types';
 
 export default class Redirect extends Component {
 

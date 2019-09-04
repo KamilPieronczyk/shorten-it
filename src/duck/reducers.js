@@ -19,7 +19,7 @@ const reducer = (state = initialState, { type, payload }) => {
 }
 
 const initialAuthState = {
-  user: 'test',
+  user: null,
 }
 
 const authReducer = (state = initialAuthState, {type, user}) => {

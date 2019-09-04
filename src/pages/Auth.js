@@ -11,14 +11,16 @@ class Auth extends Component {
   }
 
   componentDidMount(){
-    firebase.auth().onAuthStateChanged( user => {
-      if(user){
-        this.props.sign_in(user)
+    if(this.props.user != null) {
+      this.props.history.push('/page/mylinks')
+      return;
+    }
+    let  interval = setInterval(() => {
+      if(this.props.user != null) {
+        clearInterval(interval)
         this.props.history.push('/page/mylinks')
-      } else {
-        this.props.sign_out()
       }
-    })
+    }, 100);
   }
 
   onClick = () => {
@@ -30,6 +32,7 @@ class Auth extends Component {
       // The signed-in user info.
       var user = result.user
       this.props.sign_in(user)
+      this.props.history.push('/page/mylinks')
       // ...
     }).catch(function(error) {
       // Handle Errors here.
