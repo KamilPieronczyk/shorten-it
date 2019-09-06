@@ -14,13 +14,13 @@ class Home extends Component {
         <URLinput />
         <BoxContainer>
           <Box primary="#FF8008" secondary="#FFC837" title="basic">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+            Simple to use, without unnecessary authentication and registration. Just paste your link and enjoy with your shorten web address
           </Box>
           <Box primary="#1FA2FF" secondary="#A6FFCB" middle="#12D8FA" title="forever">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+            Don't care about saving your shorten links on cards, paper or even in the browser, now your links are waiting for you in MyLinks page
           </Box>
-          <Box primary="#1D976C" secondary="#93F9B9" title="fast">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+          <Box primary="#1D976C" secondary="#93F9B9" title="no limits">
+            You don't have to be concerned about how many links you can create, Here you can create that how many you need, of course try not to fill our memory in all
           </Box>
         </BoxContainer>
       </Layout>

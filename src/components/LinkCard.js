@@ -1,10 +1,30 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import firebase from 'firebase'
+import Checkbox from '@material-ui/core/Checkbox';
+import { Actions } from '../duck'
 
 class LinkCard extends Component {
   constructor(props){
     super(props)
+    this.state = {
+      url: null,
+      checked: false
+    }
+  }
+
+  componentWillMount(){
+    if(!localStorage.getItem(this.props.id))
+      firebase.storage().ref().child(`screenshots/${this.props.id}`).getDownloadURL().then((url)=>{
+        this.setState({url})
+        localStorage.setItem(this.props.id, url)
+      }).catch((e) => {
+
+      })
+    else {
+      this.setState({url: localStorage.getItem(this.props.id)})
+    }
   }
 
   openWebsite = () => {
@@ -21,18 +41,41 @@ class LinkCard extends Component {
     this.props.open(true)
   }
 
+  toggleCheckBox = (e) => {
+    switch (e.target.checked) {
+      case true:
+        this.props.add_link(this.props.id)
+        this.setState({checked: true})
+        break;
+      case false:
+        this.props.remove_link(this.props.id)
+        this.setState({checked: false})
+    }
+  }
+
   render() {
-    const {count, shortenURL} = this.props
+    const {count, shortenURL } = this.props
     return (
-      <Card>
+      <Card url={this.state.url}>
         <Overlay>
+          {
+            this.props.deleteMode ?
+            <Checkbox
+              style={{position: 'absolute',zIndex: 6, top: 10, left: 10}}
+              checked={this.state.checked}
+              onChange={(e)=>this.toggleCheckBox(e)}
+              inputProps={{
+                'aria-label': 'primary checkbox',
+              }}
+            /> : null
+          }
           <Counter>
             {count}
           </Counter>
           <Name>
             {shortenURL}
           </Name>
-          <Layer>
+          <Layer deleteMode={this.props.deleteMode}>
             <PrimaryButton onClick={this.openWebsite}>Open</PrimaryButton>
             <SecondaryButton onClick={this.copyToClipboard}>Copy</SecondaryButton>
           </Layer>
@@ -43,11 +86,13 @@ class LinkCard extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  
+  deleteMode: state.deletion.deleteMode,
+  list: state.deletion.list
 })
 
 const mapDispatchToProps = {
-  
+  add_link: Actions.add_link,
+  remove_link: Actions.remove_link
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LinkCard)
@@ -56,7 +101,11 @@ const Card = styled.div`
   position: relative;
   width: 310px;
   height: 170px;
-  background-image: url('https://www.bluefountainmedia.com/sites/default/files/2018-08/services_EXPERIENCE_WebsiteDesign_0.jpg');
+  background-image: url('${props => props.url != null ?
+     props.url
+     :
+    'https://www.bluefountainmedia.com/sites/default/files/2018-08/services_EXPERIENCE_WebsiteDesign_0.jpg'
+  }');
   background-size: cover;
   z-index: 1;
   margin-bottom: 40px;
@@ -118,7 +167,7 @@ const Layer = styled(Overlay)`
   opacity: 0;
   transition: .15s ease-in;
   ${Overlay}:hover & {
-    opacity: 1;
+    opacity: ${props=> !props.deleteMode ? 1 : 0};
   }
 `
 

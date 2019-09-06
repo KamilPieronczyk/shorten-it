@@ -12,21 +12,26 @@ class Links extends Component {
       links: [],
       snackbarIsOpen: false
     }
+    this.unsubscribe = () => {}
   }
 
   componentDidMount(){
     if(!firebase.auth().currentUser) return this.props.history.push('/page/auth')
     let uid = firebase.auth().currentUser.uid
-    firebase.firestore().collection('URLs').where('user','==',uid).onSnapshot( querySnapshot => {
+    this.unsubscribe = firebase.firestore().collection('URLs').where('user','==',uid).onSnapshot( querySnapshot => {
       querySnapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
           this.setState( ({links}) => links.push({...change.doc.data(), id: change.doc.id}))
         }
         if (change.type === "removed") {
-          this.setState( ({links}) => links.filter(item => item.id != change.doc.id))
+          this.setState( (state) => ({links: state.links.filter(item => item.id != change.doc.id)}))
         }
       });
     })
+  }
+
+  componentWillUnmount(){
+    this.unsubscribe()
   }
 
   openSnackbar = (isOpen) => {
@@ -37,7 +42,7 @@ class Links extends Component {
     return (
       <Container>
         {this.state.links.map(link =>
-          <LinkCard {...link} open={this.openSnackbar} />
+          <LinkCard {...link} open={this.openSnackbar} key={link.id} />
         )}
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}

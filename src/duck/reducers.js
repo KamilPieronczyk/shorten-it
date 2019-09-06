@@ -33,9 +33,42 @@ const authReducer = (state = initialAuthState, {type, user}) => {
   }
 }
 
+const initialDeleteState = {
+  list: [],
+  deleteMode: false,
+}
+
+const deletionReducer = (state = initialDeleteState, { type, link }) => {
+  console.log(state)
+  switch (type) {
+
+  case types.ADD_LINK_TO_DELETE:
+    state.list.push(link)
+    return { ...state }
+
+  case types.REMOVE_LINK_TO_DELETE:
+    state.list = state.list.filter(item => item != link)
+    return { ...state }
+
+  case types.TURN_ON_DELETE_MOD:
+    return {...state, deleteMode: true}
+
+  case types.TURN_OFF_DELETE_MOD:
+    return {...state, deleteMode: false}
+
+  case types.DELETE_LINKS:
+    return {list: [], deleteMode: false}
+
+  default:
+    return state
+  }
+}
+
+
 export default combineReducers({
   default: reducer,
-  auth: authReducer
+  auth: authReducer,
+  deletion: deletionReducer
 })
 
 

@@ -40,15 +40,25 @@ class URLinput extends Component {
       }
       firebase.firestore().collection('URLs').where('newURL','==',newURL).get().then(querySnapshot => {
         if(querySnapshot.empty){
-          let object = {
+          var object = {
             baseURL: url,
             shortenURL: newURL,
             count: 0,
             lastVisited: firebase.firestore.FieldValue.serverTimestamp(),
           }
           if(this.props.user != null) object.user = this.props.user.uid
-          firebase.firestore().collection('URLs').add(object).then(()=>{
-            return resolve(newURL);
+          firebase.firestore().collection('URLs').add(object).then((doc)=>{
+            if(this.props.user != null)
+              fetch(`https://shortener-io.herokuapp.com/screenshotapi/${encodeURIComponent(object.baseURL)}`)
+                .then(res => res.blob())
+                .then( image => {
+                  firebase.storage().ref().child(`screenshots/${doc.id}`).put(image).then(()=>{
+                    return resolve(newURL);
+                  }).catch(()=>{
+                    return resolve(newURL);
+                  })
+                })
+            else return resolve(newURL);
           })
         } else {
           return this.shortener(url, length, count++)

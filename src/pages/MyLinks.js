@@ -67,9 +67,18 @@ class MyLinks extends Component {
         lastVisited: firebase.firestore.FieldValue.serverTimestamp(),
         shortenURL: this.nameRef.current.value,
         user: firebase.auth().currentUser.uid
-      }).then(()=>{
-        this.setState({disableCreateButton: false})
-        this.close()
+      }).then((doc)=>{
+        fetch(`https://shortener-io.herokuapp.com/screenshotapi/${encodeURIComponent(this.URLref.current.value)}`)
+          .then(res => res.blob())
+          .then( image => {
+            firebase.storage().ref().child(`screenshots/${doc.id}`).put(image).then(()=>{
+              this.setState({disableCreateButton: false})
+              this.close()
+            }).catch((e)=>{
+              this.setState({disableCreateButton: false})
+              this.close()
+            })
+          })
       })
     }
   }
